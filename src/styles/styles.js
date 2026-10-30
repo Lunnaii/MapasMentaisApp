@@ -23,15 +23,13 @@ export default StyleSheet.create({
   botaoConta: {
     position: 'absolute', left: 20,
     minWidth: 64, minHeight: 64,
-    alignItems: 'center', justifyContent: 'center',
-  },
+    alignItems: 'center', justifyContent: 'center',},
   iconeConta: {
     width: 44, height: 44, borderRadius: 22,
     backgroundColor: '#DCE8FF', alignItems: 'center', justifyContent: 'center',
   },
-  textoBotaoConta: {
-    color: cores.primaria, fontWeight: 'bold', fontSize: 12, marginTop: 3,
-  },
+  textoBotaoConta: {color: cores.primaria, fontWeight: 'bold', fontSize: 12, marginTop: 3,},
+
   fundoPainel: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.35)' },
   sobreposicaoPainel: { ...StyleSheet.absoluteFillObject },
   painelConta: {
@@ -48,4 +46,9 @@ export default StyleSheet.create({
     backgroundColor: cores.erro, borderRadius: 8, padding: 14, alignItems: 'center',
   },
   textoSair: { color: '#FFF', fontWeight: 'bold', fontSize: 16 },
+
+  
+  link: { color: cores.primaria, textAlign: 'center', marginTop: 16, fontSize: 16 },
+  sucesso: { color: '#15803D', marginBottom: 12 },
+  conteudo: { flexGrow: 1, justifyContent: 'center' },
 });

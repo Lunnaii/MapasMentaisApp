@@ -15,8 +15,10 @@ export default function UserInfoScreen({ onClose }) {
         </Pressable>
       </View>
       <View style={styles.cartao}>
+        <Text style={styles.texto}>Nome: {usuario?.displayName || '(não informado)'}</Text>
         <Text style={styles.texto}>E-mail: {usuario?.email}</Text>
         <Text style={styles.texto}>ID (uid): {usuario?.uid}</Text>
+        <Text style={styles.texto}>E-mail verificado: {usuario?.emailVerified ? 'Sim' : 'Pendente'}</Text>
         <Text style={styles.texto}>Conta criada em: {usuario?.metadata.creationTime
           ? new Date(usuario.metadata.creationTime).toLocaleString('pt-BR')
           : 'Indisponível'}</Text>

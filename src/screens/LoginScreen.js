@@ -5,7 +5,8 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/aut
 import { auth } from '../services/firebase';
 import styles from '../styles/styles';
 
-export default function LoginScreen() {
+
+export default function LoginScreen(onCriarConta) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
@@ -56,6 +57,10 @@ export default function LoginScreen() {
         {carregando
           ? <ActivityIndicator color="#FFF" />
           : <Text style={styles.textoBotao}>Entrar</Text>}
+      </Pressable>
+
+      <Pressable onPress={onCriarConta}>
+        <Text style={styles.link}>Não tem conta? Criar conta</Text>
       </Pressable>
 
       <Pressable style={[styles.texto, {textAlign: 'center'}, {paddingTop: 8}]} onPress={() => sendPasswordResetEmail(auth, email)} disabled={carregando}>

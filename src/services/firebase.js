@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp } from 'firebase/app';
-import { getAuth, getReactNativePersistence, initializeAuth } from 'firebase/auth';
+import { getAuth, getReactNativePersistence, initializeAuth, inMemoryPersistence } from 'firebase/auth';
+import { Platform } from 'react-native';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -11,15 +12,27 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-
-let auth;
-try {
-  // Guarda a sessão no aparelho: o usuário continua logado ao reabrir o app.
-  auth = initializeAuth(app, { persistence: getReactNativePersistence(AsyncStorage) });
-} catch {
-  // Durante o recarregamento automático do Expo o Auth já pode existir.
-  auth = getAuth(app);
+// Recupera uma instância já criada (recarregamento do Expo) ou cria uma nova.
+function obterApp(nome) {
+  return getApps().find((a) => a.name === nome) ?? initializeApp(firebaseConfig, nome);
 }
 
-export { auth };
+function obterAuth(app, persistence) {
+  try {
+    return initializeAuth(app, { persistence });
+  } catch {
+    return getAuth(app);
+  }
+}
+
+// Instância principal: guarda a sessão no aparelho (igual ao Tutorial 6).
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const auth = Platform.OS === 'web'
+  ? getAuth(app)
+  : obterAuth(app, getReactNativePersistence(AsyncStorage));
+
+// Instância secundária: usada só para cadastrar outras pessoas.
+// A sessão fica apenas na memória e não substitui o usuário logado.
+const authSecundario = obterAuth(obterApp('secundario'), inMemoryPersistence);
+
+export { auth, authSecundario };
