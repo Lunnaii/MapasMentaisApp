@@ -3,7 +3,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../services/firebase';
 import styles from '../styles/styles';
 
-export default function UserInfoScreen({ onClose }) {
+export default function PainelConta({ onClose }) {
   const usuario = auth.currentUser;
 
   return (

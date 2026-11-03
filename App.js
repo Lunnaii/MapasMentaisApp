@@ -39,7 +39,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      {usuario ? <MainScreen /> : <LoginScreen />}
+      {usuario ? <MainScreen /> : telaSemLogin}
     </SafeAreaProvider>
   );
 }

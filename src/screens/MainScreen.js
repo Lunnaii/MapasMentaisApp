@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { auth } from '../services/firebase';
 import styles from '../styles/styles';
-import UserInfoScreen from './UserInfoScreen';
+import PainelConta from './PainelConta';
 
 export default function MainScreen() {
   const insets = useSafeAreaInsets();
@@ -66,7 +66,7 @@ export default function MainScreen() {
             style={[styles.painelConta, { transform: [{ translateY: deslocamento }] }]}
           >
             <SafeAreaView edges={['top', 'left', 'right']}>
-              <UserInfoScreen onClose={fecharPainel} />
+              <PainelConta onClose={fecharPainel} />
             </SafeAreaView>
           </Animated.View>
         </View>

@@ -6,7 +6,7 @@ import { auth } from '../services/firebase';
 import styles from '../styles/styles';
 
 
-export default function LoginScreen(onCriarConta) {
+export default function LoginScreen({onCriarConta}) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
