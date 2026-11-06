@@ -6,7 +6,7 @@ import { auth } from '../services/firebase';
 import styles from '../styles/styles';
 
 
-export default function LoginScreen({onCriarConta}) {
+export default function LoginScreen({ onCriarConta }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
@@ -23,9 +23,16 @@ export default function LoginScreen({onCriarConta}) {
       await signInWithEmailAndPassword(auth, email.trim(), senha);
       // Não é preciso navegar: o App.js percebe o login e mostra a Home.
     } catch (e) {
-      setErro(e.code === 'auth/network-request-failed'
-        ? 'Sem conexão com a internet.'
-        : 'E-mail ou senha inválidos.');
+      const mensagens = {
+        'auth/invalid-credential': 'E-mail ou senha inválidos.',
+        'auth/invalid-email': 'Informe um e-mail válido.',
+        'auth/user-disabled': 'Esta conta está desativada. Entre em contato com o administrador.',
+        'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente novamente.',
+        'auth/network-request-failed': 'Não foi possível conectar ao serviço de autenticação do Firebase. Verifique se a rede permite acesso ao Firebase.',
+        'auth/operation-not-allowed': 'O login por e-mail e senha não está habilitado no Firebase.',
+        'auth/invalid-api-key': 'A chave do Firebase está ausente ou inválida. Confira o arquivo .env.',
+      };
+      setErro(mensagens[e.code] || `Não foi possível entrar (${e.code || 'erro desconhecido'}).`);
     } finally {
       setCarregando(false);
     }

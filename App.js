@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 import { auth } from './src/services/firebase';
 import styles from './src/styles/styles';
@@ -15,13 +15,25 @@ export default function App() {
   const [telaPublica, setTelaPublica] = useState('login');
 
   useEffect(() => {
-    // Executa ao abrir o app e sempre que alguém entra ou sai.
-    const cancelar = onAuthStateChanged(auth, (u) => {
-      setUsuario(u);
-      setVerificando(false);
-      setTelaPublica('login'); 
-    });
-    return cancelar;
+    let cancelar = () => {};
+    let ativo = true;
+
+    async function prepararAutenticacao() {
+      // Sempre solicita as credenciais ao abrir, mesmo quando havia sessão salva.
+      await signOut(auth).catch(() => {});
+      if (!ativo) return;
+
+      cancelar = onAuthStateChanged(auth, (u) => {
+        setUsuario(u);
+        setVerificando(false);
+      });
+    }
+
+    prepararAutenticacao();
+    return () => {
+      ativo = false;
+      cancelar();
+    };
   }, []);
 
   if (verificando) {
@@ -32,14 +44,11 @@ export default function App() {
     );
   }
 
-  let telaSemLogin = <LoginScreen onCriarConta={() => setTelaPublica('criarConta')} />;
-  if (telaPublica === 'criarConta') {
-    telaSemLogin = <CadastrarUsuarioScreen onVoltar={() => setTelaPublica('login')} />;
-  }
-
   return (
     <SafeAreaProvider>
-      {usuario ? <MainScreen /> : telaSemLogin}
+      {usuario ? <MainScreen /> : telaPublica === 'criarConta'
+        ? <CadastrarUsuarioScreen onVoltar={() => setTelaPublica('login')} />
+        : <LoginScreen onCriarConta={() => setTelaPublica('criarConta')} />}
     </SafeAreaProvider>
   );
 }
