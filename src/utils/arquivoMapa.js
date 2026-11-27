@@ -14,8 +14,10 @@ export async function gerarArquivoMapa(mapa, formato, png) {
   }
   const area = obterTamanhoFolha(mapa);
   const cabecalho = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  if (cabecalho.getUint32(16) !== area.width || cabecalho.getUint32(20) !== area.height) {
-    throw new Error('A imagem gerada não corresponde ao tamanho do mapa selecionado.');
+  const larguraImagem = cabecalho.getUint32(16);
+  const alturaImagem = cabecalho.getUint32(20);
+  if (larguraImagem < area.width || alturaImagem < area.height) {
+    throw new Error('A imagem gerada não tem resolução suficiente para o mapa selecionado.');
   }
   const titulo = (mapa.titulo || 'mapa-mental').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'mapa-mental';

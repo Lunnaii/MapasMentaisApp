@@ -4,17 +4,27 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RasterizadorMapa from './RasterizadorMapa';
 import { incorporarImagens } from '../services/imagens';
-import { compartilharArquivo } from '../services/compartilhamento';
+import { baixarArquivo, compartilharArquivo } from '../services/compartilhamento';
 import { gerarSvgMapa } from '../utils/exportarMapa';
 import { gerarArquivoMapa } from '../utils/arquivoMapa';
 import { obterTamanhoFolha } from '../utils/mapaLayout';
 
 function PrepararMapa({ mapa, formato, onOcupado, onTentarNovamente }) {
   const [area] = useState(() => obterTamanhoFolha(mapa));
+  const areaRaster = (() => {
+    const pixels = area.width * area.height;
+    const fator = pixels <= 4000000 ? 2 : pixels <= 16000000 ? 1.5 : 1;
+    return {
+      width: Math.min(8192, Math.round(area.width * fator)),
+      height: Math.min(8192, Math.round(area.height * fator)),
+    };
+  })();
   const [svg, setSvg] = useState(null);
   const [png, setPng] = useState(null);
   const [erro, setErro] = useState('');
   const [compartilhando, setCompartilhando] = useState(false);
+  const [baixando, setBaixando] = useState(false);
+  const [mensagemAcao, setMensagemAcao] = useState('');
   useEffect(() => {
     let ativo = true;
     incorporarImagens(mapa).then((comImagens) => {
@@ -24,6 +34,26 @@ function PrepararMapa({ mapa, formato, onOcupado, onTentarNovamente }) {
   }, [mapa]);
   const concluirPrevia = useCallback((imagem) => setPng(imagem), []);
   const falharPrevia = useCallback(() => setErro('Não foi possível preparar a prévia do mapa. Tente novamente.'), []);
+
+  async function baixar() {
+    if (!png || baixando || compartilhando) return;
+    setBaixando(true);
+    setErro('');
+    setMensagemAcao('');
+    onOcupado(true);
+    try {
+      const arquivo = await gerarArquivoMapa(mapa, formato, png);
+      await baixarArquivo(arquivo);
+      setMensagemAcao(formato === 'pdf'
+        ? 'PDF salvo na pasta Downloads do aplicativo.'
+        : 'Imagem salva na pasta Downloads do aplicativo.');
+    } catch (e) {
+      setErro(e.message || 'Não foi possível baixar o arquivo. Tente novamente.');
+    } finally {
+      setBaixando(false);
+      onOcupado(false);
+    }
+  }
 
   async function compartilhar() {
     if (!png || compartilhando) return;
@@ -44,15 +74,21 @@ function PrepararMapa({ mapa, formato, onOcupado, onTentarNovamente }) {
   return <View style={styles.preparacao}>
     <Text style={styles.rotulo}>Prévia do mapa selecionado</Text>
     <Text style={styles.nomeSelecionado} numberOfLines={2}>{mapa.titulo}</Text>
-    <Text style={styles.medidas}>{area.width} × {area.height} px · {formato === 'pdf' ? 'PDF de uma página' : 'Imagem PNG'}</Text>
+    <Text style={styles.medidas}>{area.width} × {area.height} px · saída {areaRaster.width} × {areaRaster.height} px · {formato === 'pdf' ? 'PDF de uma página' : 'Imagem PNG'}</Text>
     <View style={styles.previa}>
       {png ? <Image source={{ uri: png }} resizeMode="contain" style={styles.imagem} accessibilityLabel={`Prévia de ${mapa.titulo}`} /> : !erro ? <View style={styles.carregando}><ActivityIndicator color="#263F78" /><Text style={styles.dica}>Preparando prévia…</Text></View> : <Ionicons name="image-outline" size={36} color="#94A3B8" />}
     </View>
-    {svg && !png && !erro && <RasterizadorMapa svg={svg} area={area} onConcluido={concluirPrevia} onErro={falharPrevia} />}
+    {svg && !png && !erro && <RasterizadorMapa svg={svg} area={areaRaster} onConcluido={concluirPrevia} onErro={falharPrevia} />}
     {!!erro && <Text style={styles.erro} accessibilityRole="alert">{erro}</Text>}
     {!!erro && !png && <Pressable style={styles.tentar} onPress={onTentarNovamente} accessibilityRole="button"><Text style={styles.textoTentar}>Tentar novamente</Text></Pressable>}
     <Text style={styles.dica}>O arquivo inclui o mapa inteiro, com imagens, textos e conexões.</Text>
-    <Pressable style={[styles.compartilhar, (!png || compartilhando) && styles.desabilitado]} disabled={!png || compartilhando} onPress={compartilhar} accessibilityRole="button" accessibilityLabel={`Compartilhar ${mapa.titulo} em ${formato.toUpperCase()}`}>
+    {!!mensagemAcao && <Text style={styles.sucessoAcao} accessibilityRole="alert">{mensagemAcao}</Text>}
+    <Pressable style={[styles.baixar, (!png || baixando || compartilhando) && styles.desabilitado]} disabled={!png || baixando || compartilhando} onPress={baixar}
+      accessibilityRole="button" accessibilityLabel={`Baixar ${mapa.titulo} em ${formato.toUpperCase()}`}>
+      {baixando ? <ActivityIndicator color="#263F78" /> : <Ionicons name="download-outline" size={20} color="#263F78" />}
+      <Text style={styles.textoBaixar}>{baixando ? 'Gerando arquivo…' : `Baixar ${formato.toUpperCase()}`}</Text>
+    </Pressable>
+    <Pressable style={[styles.compartilhar, (!png || compartilhando || baixando) && styles.desabilitado]} disabled={!png || compartilhando || baixando} onPress={compartilhar} accessibilityRole="button" accessibilityLabel={`Compartilhar ${mapa.titulo} em ${formato.toUpperCase()}`}>
       {compartilhando ? <ActivityIndicator color="#FFF" /> : <Ionicons name="share-outline" size={20} color="#FFF" />}
       <Text style={styles.textoCompartilhar}>{compartilhando ? 'Gerando arquivo…' : `Compartilhar ${formato.toUpperCase()}`}</Text>
     </Pressable>
@@ -111,7 +147,10 @@ const styles = StyleSheet.create({
   imagem: { width: '100%', height: '100%' },
   carregando: { alignItems: 'center', gap: 10 },
   dica: { color: '#64748B', fontSize: 12, lineHeight: 18 },
-  compartilhar: { marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#263F78', borderRadius: 12, minHeight: 50, padding: 14 },
+  baixar: { marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#EEF1F7', borderWidth: 1, borderColor: '#263F78', borderRadius: 12, minHeight: 50, padding: 14 },
+  textoBaixar: { color: '#263F78', fontWeight: '700' },
+  sucessoAcao: { color: '#15803D', fontSize: 13, lineHeight: 18, marginTop: 10, textAlign: 'center' },
+  compartilhar: { marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#263F78', borderRadius: 12, minHeight: 50, padding: 14 },
   textoCompartilhar: { color: '#FFF', fontWeight: '700' },
   desabilitado: { opacity: 0.5 },
   selecione: { color: '#64748B', fontSize: 13, lineHeight: 20, textAlign: 'center', padding: 20 },
