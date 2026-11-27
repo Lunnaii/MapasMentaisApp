@@ -36,9 +36,16 @@ export async function escolherImagem() {
 export async function incorporarImagens(mapa) {
   const itens = await Promise.all(mapa.itens.map(async (item) => {
     if (item.tipo !== 'imagem') return item;
+    if (item.imagemDados?.startsWith('data:image/')) return item;
+    if (item.imagemIndisponivel) return { ...item, imagemDados: null };
     if (item.imagemUri?.startsWith('data:image/')) return { ...item, imagemDados: item.imagemUri };
-    const base64 = await new File(item.imagemUri).base64();
-    return { ...item, imagemDados: `data:${item.imagemMime || 'image/jpeg'};base64,${base64}` };
+    if (!item.imagemUri) return { ...item, imagemDados: null, imagemIndisponivel: true };
+    try {
+      const base64 = await new File(item.imagemUri).base64();
+      return { ...item, imagemDados: `data:${item.imagemMime || 'image/jpeg'};base64,${base64}` };
+    } catch {
+      return { ...item, imagemDados: null, imagemUri: null, imagemIndisponivel: true };
+    }
   }));
   return { ...mapa, itens };
 }

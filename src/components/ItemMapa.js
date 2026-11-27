@@ -1,11 +1,12 @@
 import { memo, useMemo, useRef, useState } from 'react';
-import { Image, Keyboard, PanResponder, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Image, Keyboard, PanResponder, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { moverGeometria, normalizarGeometria, obterGeometriaItem, redimensionarGeometria } from '../utils/mapaLayout';
 import { obterEstiloItem, obterFamiliaFonte } from '../utils/mapaEstilos';
 
 function ItemMapa({ item, area, ativo, onSelecionar, onAtualizar, onPrevia, escala = 1, modoConexao = false }) {
   const [previa, setPrevia] = useState(null);
+  const [imagemErro, setImagemErro] = useState(false);
   const gesto = useRef(null);
   const editando = useRef(false);
 
@@ -74,7 +75,21 @@ function ItemMapa({ item, area, ativo, onSelecionar, onAtualizar, onPrevia, esca
     >
       <Pressable style={styles.conteudo} onPress={() => onSelecionar(item.id)} accessibilityLabel={`Selecionar ${item.texto}`}>
         {item.tipo === 'imagem' ? (
-          <Image style={[styles.imagem, { borderRadius: raio }]} source={{ uri: item.imagemUri }} resizeMode="contain" accessibilityLabel={item.texto || 'Imagem do mapa'} pointerEvents="none" />
+          item.imagemIndisponivel || imagemErro || (!item.imagemDados && !item.imagemUri) ? (
+            <View style={[styles.imagemIndisponivel, { borderRadius: raio }]} accessibilityLabel="Imagem não encontrada">
+              <Ionicons name="image-outline" size={26} color="#94A3B8" />
+              <Text style={styles.textoImagemIndisponivel} numberOfLines={2}>Imagem não encontrada</Text>
+            </View>
+          ) : (
+            <Image
+              style={[styles.imagem, { borderRadius: raio }]}
+              source={{ uri: item.imagemDados || item.imagemUri }}
+              resizeMode="contain"
+              accessibilityLabel={item.texto || 'Imagem do mapa'}
+              pointerEvents="none"
+              onError={() => setImagemErro(true)}
+            />
+          )
         ) : <View style={styles.conteudo} pointerEvents={ativo && !modoConexao ? 'auto' : 'none'}>
           <TextInput
             style={[styles.textoItem, { fontSize: item.tamanhoFonte || 14, color: estilo.corTexto,
@@ -114,5 +129,7 @@ const styles = StyleSheet.create({
   conteudo: { flex: 1 },
   textoItem: { flex: 1, color: '#26324B', paddingHorizontal: 8, paddingVertical: 8, textAlignVertical: 'center' },
   imagem: { width: '100%', height: '100%' },
+  imagemIndisponivel: { width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F1F5F9', padding: 8, gap: 4 },
+  textoImagemIndisponivel: { color: '#64748B', fontSize: 10, textAlign: 'center', lineHeight: 13 },
   alca: { position: 'absolute', width: 36, height: 36, borderRadius: 18, backgroundColor: '#263F78', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFF', zIndex: 3 },
 });

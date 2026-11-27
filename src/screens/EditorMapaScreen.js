@@ -112,8 +112,15 @@ export default function EditorMapaScreen({ mapaInicial, onVoltar, onSalvar }) {
         conexoes,
         criadoEm: mapaInicial?.criadoEm || new Date().toISOString(),
       });
-    } catch {
-      Alert.alert('Não foi possível salvar', 'Confira o espaço disponível no aparelho e tente novamente.');
+    } catch (erro) {
+      const mensagem = erro?.code === 'resource-exhausted'
+        ? 'O mapa ficou grande demais para salvar. Remova algumas imagens grandes e tente novamente.'
+        : erro?.code === 'permission-denied'
+          ? 'Sua conta não tem permissão para salvar este mapa.'
+          : erro?.code === 'unavailable'
+            ? 'Sem conexão agora. O mapa ficará neste aparelho até que a conexão volte e possa ser atualizado.'
+            : 'Não foi possível salvar na sua conta. Confira sua conexão e tente novamente.';
+      Alert.alert('Não foi possível salvar', mensagem);
     } finally {
       setSalvando(false);
     }

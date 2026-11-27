@@ -5,7 +5,7 @@ export default function ConfirmarExclusaoMapa({ mapa, ocupado, erro, onCancelar,
     <View style={styles.fundo}>
       <View style={styles.cartao}>
         <Text style={styles.titulo}>Apagar mapa mental?</Text>
-        <Text style={styles.texto}>O mapa “{mapa.titulo}” será removido deste aparelho. Essa ação não pode ser desfeita.</Text>
+        <Text style={styles.texto}>O mapa “{mapa.titulo}” será removido da sua conta. Essa ação não pode ser desfeita.</Text>
         {!!erro && <Text style={styles.erro} accessibilityRole="alert">{erro}</Text>}
         <Pressable style={styles.excluir} disabled={ocupado} onPress={onConfirmar} accessibilityRole="button"><Text style={styles.textoExcluir}>{ocupado ? 'Apagando…' : 'Apagar mapa'}</Text></Pressable>
         <Pressable style={styles.cancelar} disabled={ocupado} onPress={onCancelar} accessibilityRole="button"><Text style={styles.textoCancelar}>Cancelar</Text></Pressable>

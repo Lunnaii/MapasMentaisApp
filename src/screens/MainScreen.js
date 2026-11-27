@@ -9,7 +9,7 @@ import EditorMapaScreen from './EditorMapaScreen';
 import NovoMapaModal from '../components/NovoMapaModal';
 import ConfirmarExclusaoMapa from '../components/ConfirmarExclusaoMapa';
 import CompartilharMapaModal from '../components/CompartilharMapaModal';
-import { listarMapas, salvarMapa, excluirMapa } from '../services/mapas';
+import { ouvirMapas, listarMapas, salvarMapa, excluirMapa } from '../services/mapas';
 
 export default function MainScreen() {
   const insets = useSafeAreaInsets();
@@ -31,7 +31,19 @@ export default function MainScreen() {
   const [deslocamentoAjuda] = useState(() => new Animated.Value(-1000));
 
   useEffect(() => {
-    listarMapas().then(setMapas).catch(() => setErroLeitura(true));
+    let cancelar = () => {};
+    try {
+      cancelar = ouvirMapas(
+        (mapasAtualizados) => {
+          setMapas(mapasAtualizados);
+          setErroLeitura(false);
+        },
+        () => setErroLeitura(true),
+      );
+    } catch {
+      queueMicrotask(() => setErroLeitura(true));
+    }
+    return () => cancelar();
   }, []);
 
   async function confirmarExclusao() {

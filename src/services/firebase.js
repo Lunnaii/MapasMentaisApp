@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getAuth, getReactNativePersistence, initializeAuth, inMemoryPersistence } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import { Platform } from 'react-native';
 
 const firebaseConfig = {
@@ -27,6 +28,7 @@ function obterAuth(app, persistence) {
 
 // Instância principal: guarda a sessão no aparelho (igual ao Tutorial 6).
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const db = getFirestore(app);
 const auth = Platform.OS === 'web'
   ? getAuth(app)
   : obterAuth(app, getReactNativePersistence(AsyncStorage));
@@ -35,4 +37,4 @@ const auth = Platform.OS === 'web'
 // A sessão fica apenas na memória e não substitui o usuário logado.
 const authSecundario = obterAuth(obterApp('secundario'), inMemoryPersistence);
 
-export { auth, authSecundario };
+export { auth, authSecundario, db };

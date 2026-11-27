@@ -51,7 +51,11 @@ export function gerarSvgMapa(mapa) {
     const recorte = `<defs><clipPath id="item-${indice}"><rect x="${left}" y="${y}" width="${width}" height="${height}" rx="${raio}"/></clipPath></defs>`;
     if (item.tipo === 'imagem') {
       const dados = item.imagemDados || item.imagemUri;
-      if (!dados?.startsWith('data:image/')) throw new Error('Não foi possível incorporar uma imagem ao arquivo.');
+      if (!dados?.startsWith('data:image/')) {
+        const xTexto = left + width / 2;
+        const yTexto = y + height / 2;
+        return `<g>${recorte}${retangulo}<g clip-path="url(#item-${indice})"><image x="${left}" y="${y}" width="${width}" height="${height}" href=""/><text x="${xTexto}" y="${yTexto - 4}" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="600" fill="#64748B">Imagem não encontrada</text></g></g>`;
+      }
       return `<g>${recorte}${retangulo}<image x="${left}" y="${y}" width="${width}" height="${height}" href="${escaparXml(dados)}" preserveAspectRatio="xMidYMid meet" clip-path="url(#item-${indice})"/></g>`;
     }
     const fonte = item.tamanhoFonte || 14;
