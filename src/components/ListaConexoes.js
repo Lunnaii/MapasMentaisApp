@@ -11,7 +11,7 @@ export default function ListaConexoes({ itens, conexoes, onSelecionar, onFechar 
           {conexoes.map((conexao) => <Pressable key={conexao.id} style={styles.linha} onPress={() => onSelecionar(conexao.id)} accessibilityRole="button">
             <Ionicons name="git-branch-outline" size={20} color={conexao.estilo?.cor || '#64748B'} />
             <Text style={styles.nome} numberOfLines={2}>{itens.find((item) => item.id === conexao.origem)?.texto || 'Item'} → {itens.find((item) => item.id === conexao.destino)?.texto || 'Item'}</Text>
-            <Ionicons name="create-outline" size={20} color="#5B6EF5" />
+            <Ionicons name="create-outline" size={20} color="#263F78" />
           </Pressable>)}
         </ScrollView>
       </View>

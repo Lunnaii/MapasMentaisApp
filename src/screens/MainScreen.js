@@ -15,6 +15,8 @@ export default function MainScreen() {
   const insets = useSafeAreaInsets();
   const [painelMontado, setPainelMontado] = useState(false);
   const [painelAberto, setPainelAberto] = useState(false);
+  const [ajudaMontada, setAjudaMontada] = useState(false);
+  const [ajudaAberta, setAjudaAberta] = useState(false);
   const [editorAberto, setEditorAberto] = useState(false);
   const [novoMapaVisivel, setNovoMapaVisivel] = useState(false);
   const [mapaEditando, setMapaEditando] = useState(null);
@@ -26,6 +28,7 @@ export default function MainScreen() {
   const [compartilharVisivel, setCompartilharVisivel] = useState(false);
   const [mapaCompartilhandoId, setMapaCompartilhandoId] = useState(null);
   const [deslocamento] = useState(() => new Animated.Value(-1000));
+  const [deslocamentoAjuda] = useState(() => new Animated.Value(-1000));
 
   useEffect(() => {
     listarMapas().then(setMapas).catch(() => setErroLeitura(true));
@@ -66,6 +69,27 @@ export default function MainScreen() {
     setPainelAberto(false);
   }
 
+  useEffect(() => {
+    if (!ajudaMontada) return;
+
+    Animated.timing(deslocamentoAjuda, {
+      toValue: ajudaAberta ? 0 : -1000,
+      duration: 240,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished && !ajudaAberta) setAjudaMontada(false);
+    });
+  }, [ajudaAberta, ajudaMontada, deslocamentoAjuda]);
+
+  function abrirAjuda() {
+    setAjudaMontada(true);
+    setAjudaAberta(true);
+  }
+
+  function fecharAjuda() {
+    setAjudaAberta(false);
+  }
+
   if (editorAberto) {
     return (
       <EditorMapaScreen
@@ -86,37 +110,33 @@ export default function MainScreen() {
       <ScrollView contentContainerStyle={styles.conteudoInicio} showsVerticalScrollIndicator={false}>
       <View style={styles.inicioCabecalho}>
         <View>
-          <Text style={styles.inicioSaudacao}>Seu espaço criativo</Text>
           <Text style={styles.texto}>Olá, {auth.currentUser?.displayName || 'vamos criar?'}</Text>
         </View>
-        <View style={styles.marcaInicio}><Ionicons name="bulb-outline" size={22} color="#5B6EF5" /></View>
+        <Pressable
+          style={styles.marcaInicio}
+          onPress={abrirAjuda}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir ajuda"
+        >
+          <Ionicons name="bulb-outline" size={22} color="#263F78" />
+        </Pressable>
       </View>
       <View style={styles.cartaoDestaque}>
         <View style={styles.ilustracaoDestaque}>
-          <Ionicons name="git-network-outline" size={42} color="#5B6EF5" />
+          <Ionicons name="git-network-outline" size={42} color="#263F78" />
           <View style={styles.pontoDestaque}><Ionicons name="add" size={16} color="#FFF" /></View>
         </View>
-        <Text style={styles.tituloDestaque}>Tire suas ideias da cabeça</Text>
-        <Text style={styles.descricaoDestaque}>Organize pensamentos e crie conexões em um mapa visual.</Text>
+        <Text style={styles.tituloDestaque}>Começe um novo mapa por aqui!</Text>
         <Pressable style={styles.botaoCriarMapa} onPress={() => setNovoMapaVisivel(true)} accessibilityRole="button">
           <Ionicons name="add" size={20} color="#FFF" />
           <Text style={styles.textoCriarMapa}>Criar mapa mental</Text>
         </Pressable>
       </View>
-      <Text style={styles.tituloSecao}>Comece por aqui</Text>
-      <View style={styles.cartaoDica}>
-        <View style={styles.iconeDica}><Ionicons name="sparkles-outline" size={20} color="#D97706" /></View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.tituloDica}>Uma ideia de cada vez</Text>
-          <Text style={styles.textoDica}>Adicione tópicos e conecte conceitos para dar forma ao seu mapa.</Text>
-        </View>
-      </View>
-
       <View style={styles.tituloMapasLinha}>
         <Text style={styles.tituloSecao}>Meus mapas</Text>
         <Text style={styles.contagemMapas}>{mapas.length}</Text>
         <Pressable style={[styles.acaoMapa, { marginLeft: 'auto' }]} disabled={mapas.length === 0 || erroLeitura} onPress={() => { setMapaCompartilhandoId(null); setCompartilharVisivel(true); }} accessibilityRole="button" accessibilityLabel="Selecionar mapa para compartilhar">
-          <Ionicons name="share-outline" size={18} color="#5B6EF5" /><Text style={styles.textoAcaoMapa}>Compartilhar</Text>
+          <Ionicons name="share-outline" size={18} color="#263F78" /><Text style={styles.textoAcaoMapa}>Compartilhar</Text>
         </Pressable>
       </View>
       {erroLeitura ? <View style={styles.estadoVazio}>
@@ -132,7 +152,7 @@ export default function MainScreen() {
       ) : mapas.map((mapa) => (
         <View key={mapa.id} style={styles.cartaoMapa}>
           <Pressable style={styles.detalheMapa} onPress={() => { setMapaEditando(mapa); setEditorAberto(true); }} accessibilityRole="button" accessibilityLabel={`Editar ${mapa.titulo}`}>
-            <View style={styles.miniaturaMapa}><Ionicons name="git-network-outline" size={22} color="#5B6EF5" /></View>
+            <View style={styles.miniaturaMapa}><Ionicons name="git-network-outline" size={22} color="#263F78" /></View>
             <View style={{ flex: 1 }}>
               <Text style={styles.nomeMapa} numberOfLines={1}>{mapa.titulo}</Text>
               <Text style={styles.subtituloMapa}>{mapa.itens?.length || 0} itens · atualizado {new Date(mapa.atualizadoEm || mapa.criadoEm).toLocaleDateString('pt-BR')}</Text>
@@ -143,7 +163,7 @@ export default function MainScreen() {
               <Ionicons name="trash-outline" size={18} color="#B91C1C" /><Text style={[styles.textoAcaoMapa, { color: '#B91C1C' }]}>Apagar</Text>
             </Pressable>
             <Pressable style={styles.acaoMapa} onPress={() => { setMapaEditando(mapa); setEditorAberto(true); }} accessibilityRole="button" accessibilityLabel="Editar mapa">
-              <Ionicons name="create-outline" size={18} color="#5B6EF5" /><Text style={styles.textoAcaoMapa}>Editar</Text>
+              <Ionicons name="create-outline" size={18} color="#263F78" /><Text style={styles.textoAcaoMapa}>Editar</Text>
             </Pressable>
             <Pressable style={styles.acaoMapa} onPress={() => { setMapaCompartilhandoId(mapa.id); setCompartilharVisivel(true); }} accessibilityRole="button" accessibilityLabel={`Compartilhar ${mapa.titulo} como PDF ou imagem`}>
               <Ionicons name="share-outline" size={18} color="#0F9B8E" /><Text style={styles.textoAcaoMapa}>Compartilhar</Text>
@@ -170,10 +190,47 @@ export default function MainScreen() {
         accessibilityLabel="Abrir informações do usuário"
       >
         <View style={styles.iconeConta}>
-          <Ionicons name="person" size={24} color="#608ff4" />
+          <Ionicons name="person" size={30} color="#263F78" />
         </View>
         <Text style={styles.textoBotaoConta}>Conta</Text>
       </Pressable>
+
+      <Modal
+        visible={ajudaMontada}
+        transparent
+        animationType="none"
+        onRequestClose={fecharAjuda}
+      >
+        <View style={styles.fundoPainel}>
+          <Pressable
+            style={styles.sobreposicaoPainel}
+            onPress={fecharAjuda}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar ajuda"
+          />
+          <Animated.View
+            style={[styles.painelAjuda, { transform: [{ translateY: deslocamentoAjuda }] }]}
+          >
+            <SafeAreaView edges={['top', 'left', 'right']}>
+              <View style={styles.conteudoAjuda}>
+                <View style={styles.cabecalhoPainelAjuda}>
+                  <Text style={styles.tituloPainelAjuda}>Como expandir sua mente</Text>
+                  <Pressable
+                    onPress={fecharAjuda}
+                    accessibilityRole="button"
+                    accessibilityLabel="Fechar ajuda"
+                  >
+                    <Text style={styles.textoFechar}>X</Text>
+                  </Pressable>
+                </View>
+                <Text style={styles.textoAjuda}>
+                  Para começar, crie um projeto, e use a barra de ferramentas para criar textos, formas e imagens, além de usar as conexões para interligar dois itens do mapa (aperte em dois itens para criar uma conexão).
+                </Text>
+              </View>
+            </SafeAreaView>
+          </Animated.View>
+        </View>
+      </Modal>
 
       <Modal
         visible={painelMontado}

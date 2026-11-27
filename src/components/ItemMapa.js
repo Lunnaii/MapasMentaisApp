@@ -110,9 +110,9 @@ export default memo(ItemMapa);
 
 const styles = StyleSheet.create({
   item: { position: 'absolute', borderRadius: 10, borderWidth: 1.5, borderColor: '#E2E8F0', backgroundColor: '#F8FAFC' },
-  selecionado: { position: 'absolute', left: -3, right: -3, top: -3, bottom: -3, borderColor: '#5B6EF5', borderStyle: 'dashed', borderWidth: 1 },
+  selecionado: { position: 'absolute', left: -3, right: -3, top: -3, bottom: -3, borderColor: '#263F78', borderStyle: 'dashed', borderWidth: 1 },
   conteudo: { flex: 1 },
   textoItem: { flex: 1, color: '#26324B', paddingHorizontal: 8, paddingVertical: 8, textAlignVertical: 'center' },
   imagem: { width: '100%', height: '100%' },
-  alca: { position: 'absolute', width: 36, height: 36, borderRadius: 18, backgroundColor: '#5B6EF5', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFF', zIndex: 3 },
+  alca: { position: 'absolute', width: 36, height: 36, borderRadius: 18, backgroundColor: '#263F78', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFF', zIndex: 3 },
 });

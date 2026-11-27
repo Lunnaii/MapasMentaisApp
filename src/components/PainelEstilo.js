@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { FONTES, obterEstiloConexao, obterEstiloItem, obterFamiliaFonte } from '../utils/mapaEstilos';
 
 const TRACOS = [{ valor: 'solida', nome: 'Contínua' }, { valor: 'tracejada', nome: 'Tracejada' }, { valor: 'pontilhada', nome: 'Pontilhada' }];
-const CORES = ['#26324B', '#64748B', '#FFFFFF', '#5B6EF5', '#9333EA', '#DB2777', '#DC2626', '#EA580C', '#F59E0B', '#15803D', '#0D9488', '#EEF0FF', '#E6FAF7', '#FEF3C7'];
+const CORES = ['#26324B', '#64748B', '#FFFFFF', '#263F78', '#9333EA', '#DB2777', '#DC2626', '#EA580C', '#F59E0B', '#15803D', '#0D9488', '#EEF1F7', '#E6FAF7', '#FEF3C7'];
 
 function Escolha({ titulo, valor, opcoes, onChange }) {
   return <View style={styles.secao}>
@@ -30,9 +30,9 @@ function Numero({ titulo, valor, minimo, maximo, onChange }) {
   return <View style={styles.secao}>
     <Text style={styles.rotulo}>{titulo}</Text>
     <View style={styles.numeroLinha}>
-      <Pressable style={styles.passo} onPress={() => { setRascunho(null); onChange(Math.max(minimo, valor - 1)); }} accessibilityLabel={`Diminuir ${titulo}`} accessibilityRole="button"><Ionicons name="remove" size={20} color="#5B6EF5" /></Pressable>
+      <Pressable style={styles.passo} onPress={() => { setRascunho(null); onChange(Math.max(minimo, valor - 1)); }} accessibilityLabel={`Diminuir ${titulo}`} accessibilityRole="button"><Ionicons name="remove" size={20} color="#263F78" /></Pressable>
       <TextInput style={styles.numero} value={rascunho ?? String(valor)} onChangeText={setRascunho} keyboardType="number-pad" selectTextOnFocus onBlur={aplicar} onSubmitEditing={aplicar} accessibilityLabel={titulo} />
-      <Pressable style={styles.passo} onPress={() => { setRascunho(null); onChange(Math.min(maximo, valor + 1)); }} accessibilityLabel={`Aumentar ${titulo}`} accessibilityRole="button"><Ionicons name="add" size={20} color="#5B6EF5" /></Pressable>
+      <Pressable style={styles.passo} onPress={() => { setRascunho(null); onChange(Math.min(maximo, valor + 1)); }} accessibilityLabel={`Aumentar ${titulo}`} accessibilityRole="button"><Ionicons name="add" size={20} color="#263F78" /></Pressable>
     </View>
   </View>;
 }
@@ -43,7 +43,7 @@ function Cores({ titulo, valor, onChange, transparente = false }) {
   function aplicar() {
     const cor = (rascunho ?? valor).trim();
     if (!/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i.test(cor)) {
-      setErro('Use uma cor hexadecimal, por exemplo #5B6EF5.');
+      setErro('Use uma cor hexadecimal, por exemplo #263F78.');
       return;
     }
     onChange(cor.toUpperCase());
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   subtitulo: { color: '#1E293B', fontSize: 16, fontWeight: '700', marginVertical: 12 },
   opcoes: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   opcao: { paddingHorizontal: 13, minHeight: 44, justifyContent: 'center', backgroundColor: '#F1F5F9', borderRadius: 10, borderWidth: 1, borderColor: '#E2E8F0' },
-  opcaoAtiva: { backgroundColor: '#E8ECFF', borderColor: '#5B6EF5' },
+  opcaoAtiva: { backgroundColor: '#EEF1F7', borderColor: '#263F78' },
   textoOpcao: { color: '#334155', fontSize: 12, fontWeight: '500' },
   numeroLinha: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   passo: { width: 44, height: 44, justifyContent: 'center', alignItems: 'center' },
@@ -127,11 +127,11 @@ const styles = StyleSheet.create({
   corAtiva: { borderWidth: 3, borderColor: '#111827' },
   corPersonalizada: { flexDirection: 'row', gap: 10, marginTop: 12 },
   hex: { flex: 1, borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 10, paddingHorizontal: 12, minHeight: 44, color: '#334155' },
-  aplicar: { backgroundColor: '#EEF0FF', padding: 12, borderRadius: 10, justifyContent: 'center' },
+  aplicar: { backgroundColor: '#EEF1F7', padding: 12, borderRadius: 10, justifyContent: 'center' },
   erro: { color: '#B91C1C', fontSize: 12, marginTop: 8 },
   restaurar: { paddingVertical: 14, alignItems: 'center' },
   excluir: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14, backgroundColor: '#FEF2F2', borderRadius: 12, marginTop: 8 },
   textoExcluir: { color: '#B91C1C', fontWeight: '600' },
-  concluir: { backgroundColor: '#5B6EF5', padding: 15, alignItems: 'center', borderRadius: 12, margin: 16 },
+  concluir: { backgroundColor: '#263F78', padding: 15, alignItems: 'center', borderRadius: 12, margin: 16 },
   textoConcluir: { color: '#FFF', fontWeight: '700' },
 });

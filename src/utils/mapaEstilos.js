@@ -11,7 +11,7 @@ export function obterFamiliaFonte(id, plataforma) {
 
 export function obterEstiloItem(item) {
   const base = item.tipo === 'ideia'
-    ? { fundo: '#EEF0FF', corBorda: '#C7CEFF', raio: 28, espessuraBorda: 1.5 }
+    ? { fundo: '#EEF1F7', corBorda: '#DDE3F0', raio: 28, espessuraBorda: 1.5 }
     : item.tipo === 'retangulo'
       ? { fundo: '#E6FAF7', corBorda: '#99E3D7', raio: 8, espessuraBorda: 1.5 }
       : item.tipo === 'imagem'

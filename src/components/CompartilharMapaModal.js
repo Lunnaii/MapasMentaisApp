@@ -46,7 +46,7 @@ function PrepararMapa({ mapa, formato, onOcupado, onTentarNovamente }) {
     <Text style={styles.nomeSelecionado} numberOfLines={2}>{mapa.titulo}</Text>
     <Text style={styles.medidas}>{area.width} × {area.height} px · {formato === 'pdf' ? 'PDF de uma página' : 'Imagem PNG'}</Text>
     <View style={styles.previa}>
-      {png ? <Image source={{ uri: png }} resizeMode="contain" style={styles.imagem} accessibilityLabel={`Prévia de ${mapa.titulo}`} /> : !erro ? <View style={styles.carregando}><ActivityIndicator color="#5B6EF5" /><Text style={styles.dica}>Preparando prévia…</Text></View> : <Ionicons name="image-outline" size={36} color="#94A3B8" />}
+      {png ? <Image source={{ uri: png }} resizeMode="contain" style={styles.imagem} accessibilityLabel={`Prévia de ${mapa.titulo}`} /> : !erro ? <View style={styles.carregando}><ActivityIndicator color="#263F78" /><Text style={styles.dica}>Preparando prévia…</Text></View> : <Ionicons name="image-outline" size={36} color="#94A3B8" />}
     </View>
     {svg && !png && !erro && <RasterizadorMapa svg={svg} area={area} onConcluido={concluirPrevia} onErro={falharPrevia} />}
     {!!erro && <Text style={styles.erro} accessibilityRole="alert">{erro}</Text>}
@@ -76,12 +76,12 @@ export default function CompartilharMapaModal({ mapas, mapaInicialId = null, onF
           <Text style={styles.rotulo}>1. Selecione o mapa</Text>
           {mapas.length === 0 && <Text style={styles.dica}>Crie e salve um mapa antes de compartilhar.</Text>}
           {mapas.map((mapa) => <Pressable key={mapa.id} style={[styles.mapa, selecionado === mapa.id && styles.selecionado]} disabled={ocupado} onPress={() => { setSelecionado(mapa.id); setTentativa(0); }} accessibilityRole="button" accessibilityState={{ selected: selecionado === mapa.id }} accessibilityLabel={`Selecionar mapa ${mapa.titulo}`}>
-            <Ionicons name={selecionado === mapa.id ? 'radio-button-on' : 'radio-button-off'} size={22} color={selecionado === mapa.id ? '#5B6EF5' : '#94A3B8'} />
+            <Ionicons name={selecionado === mapa.id ? 'radio-button-on' : 'radio-button-off'} size={22} color={selecionado === mapa.id ? '#263F78' : '#94A3B8'} />
             <Text style={styles.nomeMapa} numberOfLines={2}>{mapa.titulo}</Text>
           </Pressable>)}
           <Text style={styles.rotulo}>2. Escolha o formato</Text>
           <View style={styles.formatos}>{[{ id: 'pdf', titulo: 'Documento PDF', icone: 'document-text-outline' }, { id: 'png', titulo: 'Imagem PNG', icone: 'image-outline' }].map((opcao) => <Pressable key={opcao.id} style={[styles.formato, formato === opcao.id && styles.selecionado]} disabled={ocupado} onPress={() => setFormato(opcao.id)} accessibilityRole="button" accessibilityState={{ selected: formato === opcao.id }}>
-            <Ionicons name={opcao.icone} size={24} color="#5B6EF5" /><Text style={styles.textoFormato}>{opcao.titulo}</Text>
+            <Ionicons name={opcao.icone} size={24} color="#263F78" /><Text style={styles.textoFormato}>{opcao.titulo}</Text>
           </Pressable>)}</View>
           {mapaSelecionado ? <PrepararMapa key={`${mapaSelecionado.id}-${mapaSelecionado.atualizadoEm || ''}-${tentativa}`} mapa={mapaSelecionado} formato={formato} onOcupado={setOcupado} onTentarNovamente={() => setTentativa((valor) => valor + 1)} /> : <Text style={styles.selecione}>Selecione um mapa acima para ver a prévia e compartilhar.</Text>}
         </ScrollView>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   conteudo: { padding: 20, paddingBottom: 28 },
   rotulo: { color: '#475569', fontSize: 13, fontWeight: '700', marginBottom: 12, marginTop: 10 },
   mapa: { flexDirection: 'row', alignItems: 'center', gap: 12, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, padding: 14, marginBottom: 8 },
-  selecionado: { borderColor: '#5B6EF5', backgroundColor: '#EEF0FF' },
+  selecionado: { borderColor: '#263F78', backgroundColor: '#EEF1F7' },
   nomeMapa: { flex: 1, color: '#334155', fontSize: 14, fontWeight: '500' },
   formatos: { flexDirection: 'row', gap: 10, marginBottom: 14 },
   formato: { flex: 1, alignItems: 'center', gap: 8, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 14, padding: 16 },
@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
   imagem: { width: '100%', height: '100%' },
   carregando: { alignItems: 'center', gap: 10 },
   dica: { color: '#64748B', fontSize: 12, lineHeight: 18 },
-  compartilhar: { marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#5B6EF5', borderRadius: 12, minHeight: 50, padding: 14 },
+  compartilhar: { marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#263F78', borderRadius: 12, minHeight: 50, padding: 14 },
   textoCompartilhar: { color: '#FFF', fontWeight: '700' },
   desabilitado: { opacity: 0.5 },
   selecione: { color: '#64748B', fontSize: 13, lineHeight: 20, textAlign: 'center', padding: 20 },
   erro: { color: '#B91C1C', marginBottom: 10, fontSize: 13 },
   tentar: { paddingVertical: 12, alignItems: 'center' },
-  textoTentar: { color: '#5B6EF5', fontWeight: '600' },
+  textoTentar: { color: '#263F78', fontWeight: '600' },
 });

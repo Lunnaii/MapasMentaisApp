@@ -10,7 +10,7 @@ import { escolherImagem } from '../services/imagens';
 import { normalizarGeometria, obterGeometriaItem, obterTamanhoFolha } from '../utils/mapaLayout';
 
 const ferramentas = [
-  { id: 'texto', titulo: 'Texto', icone: 'text-outline', cor: '#5B6EF5' },
+  { id: 'texto', titulo: 'Texto', icone: 'text-outline', cor: '#263F78' },
   { id: 'ideia', titulo: 'Ideia', icone: 'ellipse-outline', cor: '#A855F7' },
   { id: 'retangulo', titulo: 'Caixa', icone: 'square-outline', cor: '#0EA5A4' },
   { id: 'imagem', titulo: 'Imagem', icone: 'image-outline', cor: '#F59E0B' },
@@ -185,10 +185,10 @@ export default function EditorMapaScreen({ mapaInicial, onVoltar, onSalvar }) {
         </Pressable>
         <TextInput style={styles.titulo} value={titulo} onChangeText={setTitulo} selectTextOnFocus accessibilityLabel="Nome do mapa mental" />
         <Pressable style={styles.botaoCabecalho} onPress={() => { Keyboard.dismiss(); setMenuVisivel((visivel) => !visivel); }} accessibilityRole="button" accessibilityLabel={menuVisivel ? 'Ocultar ferramentas' : 'Exibir ferramentas'} accessibilityState={{ expanded: menuVisivel }}>
-          <Ionicons name={menuVisivel ? 'chevron-forward-outline' : 'options-outline'} size={22} color="#5B6EF5" />
+          <Ionicons name={menuVisivel ? 'chevron-forward-outline' : 'options-outline'} size={22} color="#263F78" />
         </Pressable>
         <Pressable style={[styles.botaoCabecalho, styles.salvar]} onPress={salvar} disabled={salvando || !folhaPronta} accessibilityRole="button" accessibilityLabel="Salvar mapa">
-          <Ionicons name={salvando ? 'hourglass-outline' : 'save-outline'} size={21} color="#5B6EF5" />
+          <Ionicons name={salvando ? 'hourglass-outline' : 'save-outline'} size={21} color="#263F78" />
         </Pressable>
       </View>
 
@@ -202,15 +202,15 @@ export default function EditorMapaScreen({ mapaInicial, onVoltar, onSalvar }) {
           <View style={styles.controleFonte}>
             {itemSelecionado && itemSelecionado.tipo !== 'imagem' && <>
             <Pressable style={styles.botaoFonte} onPress={() => ajustarFonte(-2)} disabled={(itemSelecionado.tamanhoFonte || 14) <= 6} accessibilityRole="button" accessibilityLabel="Diminuir tamanho do texto">
-              <Ionicons name="remove" size={18} color="#5B6EF5" />
+              <Ionicons name="remove" size={18} color="#263F78" />
             </Pressable>
             <Text style={styles.tamanhoFonte}>{itemSelecionado.tamanhoFonte || 14}</Text>
             <Pressable style={styles.botaoFonte} onPress={() => ajustarFonte(2)} disabled={(itemSelecionado.tamanhoFonte || 14) >= 96} accessibilityRole="button" accessibilityLabel="Aumentar tamanho do texto">
-              <Ionicons name="add" size={18} color="#5B6EF5" />
+              <Ionicons name="add" size={18} color="#263F78" />
             </Pressable>
             </>}
             <Pressable style={styles.botaoEstilo} onPress={() => { Keyboard.dismiss(); setPainelEstiloAberto(true); }} accessibilityRole="button" accessibilityLabel="Editar estilo">
-              <Ionicons name="options-outline" size={18} color="#5B6EF5" /><Text style={styles.textoAjustar}>Estilo</Text>
+              <Ionicons name="options-outline" size={18} color="#263F78" /><Text style={styles.textoAjustar}>Estilo</Text>
             </Pressable>
             <Pressable style={styles.botaoFonte} onPress={removerSelecao} accessibilityRole="button" accessibilityLabel="Remover elemento selecionado">
               <Ionicons name="trash-outline" size={18} color="#B91C1C" />
@@ -221,9 +221,9 @@ export default function EditorMapaScreen({ mapaInicial, onVoltar, onSalvar }) {
 
       <View style={styles.barraZoom}>
         <Text style={styles.dimensoes}>{area.width} × {area.height} px</Text>
-        <Pressable style={styles.botaoZoom} onPress={() => setZoom(Math.max(0.05, escala / 1.25))} accessibilityRole="button" accessibilityLabel="Diminuir zoom"><Ionicons name="remove" size={18} color="#5B6EF5" /></Pressable>
+        <Pressable style={styles.botaoZoom} onPress={() => setZoom(Math.max(0.05, escala / 1.25))} accessibilityRole="button" accessibilityLabel="Diminuir zoom"><Ionicons name="remove" size={18} color="#263F78" /></Pressable>
         <Text style={styles.percentual}>{Math.round(escala * 100)}%</Text>
-        <Pressable style={styles.botaoZoom} onPress={() => setZoom(Math.min(4, escala * 1.25))} accessibilityRole="button" accessibilityLabel="Aumentar zoom"><Ionicons name="add" size={18} color="#5B6EF5" /></Pressable>
+        <Pressable style={styles.botaoZoom} onPress={() => setZoom(Math.min(4, escala * 1.25))} accessibilityRole="button" accessibilityLabel="Aumentar zoom"><Ionicons name="add" size={18} color="#263F78" /></Pressable>
         <Pressable style={styles.ajustarZoom} onPress={() => setZoom(null)} accessibilityRole="button" accessibilityLabel="Ajustar folha à tela"><Text style={styles.textoAjustar}>Ajustar</Text></Pressable>
       </View>
 
@@ -257,7 +257,7 @@ export default function EditorMapaScreen({ mapaInicial, onVoltar, onSalvar }) {
                 </Pressable>
               ))}
               <Pressable style={styles.ocultarMenu} onPress={() => { Keyboard.dismiss(); setListaConexoesAberta(true); }} accessibilityRole="button" accessibilityLabel="Listar e editar conexões">
-                <Ionicons name="list-outline" size={18} color="#5B6EF5" /><Text style={styles.nomeFerramenta}>Ligações ({conexoes.length})</Text>
+                <Ionicons name="list-outline" size={18} color="#263F78" /><Text style={styles.nomeFerramenta}>Ligações ({conexoes.length})</Text>
               </Pressable>
               <Pressable style={styles.ocultarMenu} onPress={() => setMenuVisivel(false)} accessibilityRole="button" accessibilityLabel="Ocultar ferramentas">
                 <Ionicons name="chevron-forward-outline" size={18} color="#64748B" />
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   cabecalho: { minHeight: 60, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 6 },
   botaoCabecalho: { width: 44, height: 44, borderRadius: 15, backgroundColor: '#FFF', alignItems: 'center', justifyContent: 'center' },
   titulo: { flex: 1, minWidth: 60, color: '#1E293B', fontSize: 15, fontWeight: '700', paddingVertical: 8 },
-  salvar: { backgroundColor: '#E8ECFF' },
+  salvar: { backgroundColor: '#EEF1F7' },
   instrucoes: { height: 62, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 8 },
   dica: { flex: 1, color: '#64748B', fontSize: 11, lineHeight: 16 },
   controleFonte: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 12 },
@@ -304,12 +304,12 @@ const styles = StyleSheet.create({
   botaoZoom: { width: 34, height: 44, alignItems: 'center', justifyContent: 'center' },
   percentual: { minWidth: 34, textAlign: 'center', color: '#475569', fontSize: 11 },
   ajustarZoom: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 6 },
-  textoAjustar: { color: '#5B6EF5', fontSize: 11, fontWeight: '600' },
+  textoAjustar: { color: '#263F78', fontSize: 11, fontWeight: '600' },
   menuLateral: { position: 'absolute', top: 12, right: 20, width: 76, maxHeight: '94%', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 18, elevation: 5, shadowColor: '#334155', shadowOpacity: 0.12, shadowRadius: 12, shadowOffset: { width: 0, height: 3 } },
   listaFerramentas: { alignItems: 'center', paddingVertical: 12, gap: 10 },
   rotuloFerramentas: { color: '#94A3B8', fontSize: 9, fontWeight: '700', letterSpacing: 1, marginBottom: 2 },
   ferramenta: { minWidth: 64, minHeight: 60, alignItems: 'center', justifyContent: 'center' },
-  ferramentaAtiva: { backgroundColor: '#E8ECFF', borderRadius: 12 },
+  ferramentaAtiva: { backgroundColor: '#EEF1F7', borderRadius: 12 },
   iconeFerramenta: { width: 38, height: 38, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   nomeFerramenta: { marginTop: 4, color: '#475569', fontSize: 10, fontWeight: '600' },
   ocultarMenu: { width: 60, minHeight: 48, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, borderTopColor: '#F1F5F9', marginTop: 2, paddingTop: 8 },
