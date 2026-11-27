@@ -46,37 +46,50 @@ export default function FormularioUsuario({ textoBotao, onSalvar }) {
 
   return (
     <>
-      <TextInput style={styles.campo} placeholder="Nome" value={nome} onChangeText={setNome} />
+      <Text style={styles.authRotulo}>Nome</Text>
       <TextInput
-        style={styles.campo}
-        placeholder="E-mail"
+        style={styles.authCampo}
+        placeholder="Digite seu nome"
+        placeholderTextColor="#94A3B8"
+        value={nome}
+        onChangeText={setNome}
+      />
+      <Text style={styles.authRotulo}>E-mail</Text>
+      <TextInput
+        style={styles.authCampo}
+        placeholder="Digite seu e-mail"
+        placeholderTextColor="#94A3B8"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
+      <Text style={styles.authRotulo}>Senha</Text>
       <TextInput
-        style={styles.campo}
-        placeholder="Senha (mínimo 6 caracteres)"
+        style={styles.authCampo}
+        placeholder="Mínimo 6 caracteres"
+        placeholderTextColor="#94A3B8"
         value={senha}
         onChangeText={setSenha}
         secureTextEntry
       />
+      <Text style={styles.authRotulo}>Confirmar senha</Text>
       <TextInput
-        style={styles.campo}
-        placeholder="Confirme a senha"
+        style={styles.authCampo}
+        placeholder="Digite a senha novamente"
+        placeholderTextColor="#94A3B8"
         value={confirmacao}
         onChangeText={setConfirmacao}
         secureTextEntry
       />
 
-      {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
-      {sucesso !== '' && <Text style={styles.sucesso}>{sucesso}</Text>}
+      {erro !== '' && <Text style={styles.authErro}>{erro}</Text>}
+      {sucesso !== '' && <Text style={styles.authSucesso}>{sucesso}</Text>}
 
-      <Pressable style={styles.botao} onPress={salvar} disabled={carregando}>
+      <Pressable style={styles.authBotao} onPress={salvar} disabled={carregando}>
         {carregando
           ? <ActivityIndicator color="#FFF" />
-          : <Text style={styles.textoBotao}>{textoBotao}</Text>}
+          : <Text style={styles.authTextoBotao}>{textoBotao}</Text>}
       </Pressable>
     </>
   );

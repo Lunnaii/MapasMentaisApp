@@ -7,7 +7,7 @@ import { auth } from './src/services/firebase';
 import styles from './src/styles/styles';
 import LoginScreen from './src/screens/LoginScreen';
 import MainScreen from './src/screens/MainScreen';
-import CadastrarUsuarioScreen from './src/screens/CadastrarUsuario';
+import CriarContaScreen from './src/screens/CriarConta';
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
@@ -47,7 +47,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       {usuario ? <MainScreen /> : telaPublica === 'criarConta'
-        ? <CadastrarUsuarioScreen onVoltar={() => setTelaPublica('login')} />
+        ? <CriarContaScreen onVoltar={() => setTelaPublica('login')} />
         : <LoginScreen onCriarConta={() => setTelaPublica('criarConta')} />}
     </SafeAreaProvider>
   );

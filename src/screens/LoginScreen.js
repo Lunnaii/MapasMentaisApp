@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, TextInput } from 'react-native';
+import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../services/firebase';
@@ -10,7 +10,46 @@ export default function LoginScreen({ onCriarConta }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
+  const [sucessoSenha, setSucessoSenha] = useState('');
   const [carregando, setCarregando] = useState(false);
+  const [carregandoSenha, setCarregandoSenha] = useState(false);
+
+  async function redefinirSenha() {
+    const emailLimpo = email.trim();
+
+    if (!emailLimpo) {
+      setSucessoSenha('');
+      setErro('Informe seu e-mail antes de redefinir a senha.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailLimpo)) {
+      setSucessoSenha('');
+      setErro('Informe um e-mail válido.');
+      return;
+    }
+
+    setErro('');
+    setSucessoSenha('');
+    setCarregandoSenha(true);
+
+    try {
+      auth.languageCode = 'pt-BR';
+      await sendPasswordResetEmail(auth, emailLimpo);
+      setSucessoSenha(`Enviamos um link de redefinição para ${emailLimpo}. Verifique sua caixa de entrada e o spam.`);
+    } catch (e) {
+      const mensagens = {
+        'auth/invalid-email': 'Informe um e-mail válido.',
+        'auth/user-not-found': 'Não encontramos uma conta com este e-mail.',
+        'auth/too-many-requests': 'Muitas solicitações. Aguarde alguns minutos e tente novamente.',
+        'auth/network-request-failed': 'Não foi possível conectar ao Firebase. Verifique sua internet.',
+        'auth/operation-not-allowed': 'A redefinição de senha não está habilitada no Firebase.',
+      };
+      setErro(mensagens[e.code] || 'Não foi possível enviar o e-mail de redefinição.');
+    } finally {
+      setCarregandoSenha(false);
+    }
+  }
 
   async function entrar() {
     if (!email.trim() || !senha) {
@@ -39,42 +78,63 @@ export default function LoginScreen({ onCriarConta }) {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { justifyContent: 'center' }]}>
-      <Text style={[styles.titulo, { textAlign: 'center' }]}>Entrar</Text>
+    <SafeAreaView style={styles.authContainer}>
+      <View style={styles.authConteudo}>
+        <View style={styles.authCabecalho}>
+          <Text style={styles.authTitulo}>EXPANSÃO</Text>
+          <Text style={styles.authTitulo}>MENTAL</Text>
+        </View>
 
-      <TextInput
-        style={styles.campo}
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.campo}
-        placeholder="Senha"
-        value={senha}
-        onChangeText={setSenha}
-        secureTextEntry
-      />
+        <Text style={styles.authRotulo}>Usuário/e-mail</Text>
+        <TextInput
+          style={styles.authCampo}
+          placeholder="Digite seu e-mail"
+          placeholderTextColor="#94A3B8"
+          value={email}
+          onChangeText={(texto) => {
+            setEmail(texto);
+            setErro('');
+            setSucessoSenha('');
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
 
-      {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+        <Text style={styles.authRotulo}>Senha</Text>
+        <TextInput
+          style={styles.authCampo}
+          placeholder="Digite sua senha"
+          placeholderTextColor="#94A3B8"
+          value={senha}
+          onChangeText={setSenha}
+          secureTextEntry
+        />
 
-      <Pressable style={styles.botao} onPress={entrar} disabled={carregando}>
-        {carregando
-          ? <ActivityIndicator color="#FFF" />
-          : <Text style={styles.textoBotao}>Entrar</Text>}
-      </Pressable>
+        {erro !== '' && <Text style={styles.authErro}>{erro}</Text>}
+        {sucessoSenha !== '' && <Text style={styles.authSucesso}>{sucessoSenha}</Text>}
 
-      <Pressable onPress={onCriarConta}>
-        <Text style={styles.link}>Não tem conta? Criar conta</Text>
-      </Pressable>
+        <Pressable style={styles.authBotao} onPress={entrar} disabled={carregando}>
+          {carregando
+            ? <ActivityIndicator color="#FFF" />
+            : <Text style={styles.authTextoBotao}>Entrar</Text>}
+        </Pressable>
 
-      <Pressable style={[styles.texto, {textAlign: 'center'}, {paddingTop: 8}]} onPress={() => sendPasswordResetEmail(auth, email)} disabled={carregando}>
-        {carregando
-          ? <ActivityIndicator color="#7166bb" />
-          : <Text style={styles.textoBotao}>Esqueci minha senha</Text>}
-      </Pressable>
+        <Pressable
+          onPress={redefinirSenha}
+          disabled={carregando || carregandoSenha}
+        >
+          {carregandoSenha
+            ? <ActivityIndicator color="#526BA3" style={{ marginTop: 18 }} />
+            : <Text style={styles.authLink}>Esqueci minha senha</Text>}
+        </Pressable>
+
+        <View style={styles.authAlternador}>
+          <Text style={styles.authTextoAlternador}>Novo por aqui? </Text>
+          <Pressable onPress={onCriarConta}>
+            <Text style={styles.authLinkDestaque}>Crie sua conta!</Text>
+          </Pressable>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }

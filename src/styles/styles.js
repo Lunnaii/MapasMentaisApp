@@ -8,6 +8,43 @@ const cores = {
 };
 
 export default StyleSheet.create({
+  authContainer: { flex: 1, backgroundColor: '#FFFFFF' },
+  authScroll: { flex: 1, backgroundColor: '#FFFFFF' },
+  authConteudo: {
+    flexGrow: 1, width: '100%', maxWidth: 420, alignSelf: 'center',
+    justifyContent: 'center', paddingHorizontal: 28, paddingVertical: 36,
+  },
+  authCadastroConteudo: {
+    flexGrow: 1, width: '100%', maxWidth: 420, alignSelf: 'center',
+    justifyContent: 'center', paddingHorizontal: 28, paddingVertical: 48,
+  },
+  authCabecalho: { alignItems: 'center', marginBottom: 34 },
+  authTitulo: {
+    color: '#263F78', fontSize: 38, lineHeight: 44,
+    fontWeight: '900', textAlign: 'center', letterSpacing: 0,
+  },
+  authSubtitulo: {
+    color: '#64748B', fontSize: 13, textAlign: 'center', marginTop: 10,
+  },
+  authRotulo: { color: '#263F78', fontSize: 15, fontWeight: '700', marginBottom: 8 },
+  authCampo: {
+    width: '100%', height: 56, backgroundColor: '#EEF1F7',
+    borderWidth: 1, borderColor: '#DDE3F0', borderRadius: 28,
+    paddingHorizontal: 20, marginBottom: 20, fontSize: 16, color: '#263F78',
+  },
+  authBotao: {
+    height: 56, backgroundColor: '#263F78', borderRadius: 28,
+    alignItems: 'center', justifyContent: 'center', marginTop: 4,
+  },
+  authTextoBotao: { color: '#FFFFFF', fontWeight: '800', fontSize: 16 },
+  authLink: { color: '#526BA3', textAlign: 'center', marginTop: 18, fontSize: 14 },
+  authVoltar: { color: '#526BA3', textAlign: 'center', marginTop: 16, fontSize: 14 },
+  authErro: { color: cores.erro, marginBottom: 12, textAlign: 'center' },
+  authSucesso: { color: '#15803D', marginBottom: 12, textAlign: 'center' },
+  authAlternador: { flexDirection: 'row', justifyContent: 'center', marginTop: 22 },
+  authTextoAlternador: { color: '#64748B', fontSize: 14 },
+  authLinkDestaque: { color: '#263F78', fontSize: 14, fontWeight: '800' },
+
   container: { flex: 1, backgroundColor: cores.fundo, padding: 20 },
   centro: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   titulo: { fontSize: 24, fontWeight: 'bold', color: cores.primaria, marginBottom: 16 },
